@@ -1,4 +1,4 @@
-const Products = () => {
+const Products = async () => {
   return <h1>Products pages</h1>;
 };
 
