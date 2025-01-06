@@ -1,11 +1,8 @@
 "use client";
 
 import { Badge } from "@/app/_components/ui/badge";
-import { Product as PrismaProduct } from "@prisma/client";
+import { Product } from "@prisma/client";
 
-interface Product extends PrismaProduct {
-  status: "IN_STOCK" | "OUT_OF_STOCK";
-}
 import { ColumnDef } from "@tanstack/react-table";
 
 const getStatusLabel = (status: string) => {
@@ -33,11 +30,12 @@ export const productTableColumns: ColumnDef<Product>[] = [
     header: "Status",
     cell: (row) => {
       const product = row.row.original;
-      const label = getStatusLabel(product.status);
+      const status = product.stock > 0 ? "IN_STOCK" : "OUT_OF_STOCK";
+      const label = getStatusLabel(status);
       return (
         <Badge
           className="gap-1"
-          variant={product.status === "IN_STOCK" ? "primary" : "destructive"}
+          variant={status === "IN_STOCK" ? "primary" : "destructive"}
         >
           {label}
         </Badge>
