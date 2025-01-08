@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/app/_components/ui/dialog";
-import { z } from "zod";
 import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,27 +24,21 @@ import {
 } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
 import { NumericFormat } from "react-number-format";
+import { createProduct } from "@/app/_actions/create-product";
+import { useState } from "react";
+import {
+  createProductSchema,
+  CreateProductSchema,
+} from "@/app/_actions/create-product/schema";
 
 const AddProductButton = () => {
   // Definição do schema de validação
-  const formSchema = z.object({
-    name: z.string().trim().min(1, {
-      message: "O nome do produto é obrigatório.",
-    }),
-    price: z.number().min(0.01, {
-      message: "O preço do produto deve ser maior que R$ 0,01.",
-    }),
-    stock: z.coerce.number().int().positive({
-      message: "A quantidade em estoque deve ser maior que zero.",
-    }),
-  });
-
-  type ProductSchema = z.infer<typeof formSchema>;
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
 
   // Configuração do React Hook Form
-  const form = useForm<ProductSchema>({
+  const form = useForm<CreateProductSchema>({
     shouldUnregister: true,
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(createProductSchema),
     defaultValues: {
       name: "",
       price: 0,
@@ -54,12 +47,17 @@ const AddProductButton = () => {
   });
 
   // Função para tratar submissão do formulário
-  const onSubmit = (data: ProductSchema) => {
-    console.log({ data });
+  const onSubmit = async (data: CreateProductSchema) => {
+    try {
+      await createProduct(data);
+      setDialogIsOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
       <DialogTrigger asChild>
         <Button variant={"default"} className="gap-2 self-end">
           <PlusIcon size={20} />
