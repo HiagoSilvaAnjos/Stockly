@@ -1,7 +1,7 @@
-import { createProduct } from "@/app/_actions/create-product";
+import { upsertProduct } from "@/app/_actions/create-product";
 import {
-  createProductSchema,
-  CreateProductSchema,
+  upsertProductSchema,
+  UpsertProductSchema,
 } from "@/app/_actions/create-product/schema";
 import { Button } from "@/app/_components/ui/button";
 import {
@@ -27,39 +27,43 @@ import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
 interface UpsertProductDialogContentProps {
+  defaultValues?: UpsertProductSchema;
   onSuccess?: () => void;
 }
 
 const UpsertProductDialogContent = ({
   onSuccess,
+  defaultValues,
 }: UpsertProductDialogContentProps) => {
   // Configuração do React Hook Form
-  const form = useForm<CreateProductSchema>({
+  const form = useForm<UpsertProductSchema>({
     shouldUnregister: true,
-    resolver: zodResolver(createProductSchema),
-    defaultValues: {
+    resolver: zodResolver(upsertProductSchema),
+    defaultValues: defaultValues ?? {
       name: "",
-      price: 1,
+      price: 0,
       stock: 1,
     },
   });
 
   // Função para tratar submissão do formulário
-  const onSubmit = async (data: CreateProductSchema) => {
+  const onSubmit = async (data: UpsertProductSchema) => {
     try {
-      await createProduct(data);
+      await upsertProduct({ ...data, id: defaultValues?.id });
       onSuccess?.();
     } catch (error) {
       console.log(error);
     }
   };
 
+  const isEditing = !!defaultValues;
+
   return (
     <DialogContent>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <DialogHeader>
-            <DialogTitle>Criar Produto</DialogTitle>
+            <DialogTitle>{isEditing ? "Editar" : "Criar"} Produto</DialogTitle>
             <DialogDescription>
               Insira as informações abaixo para cadastrar o produto.
             </DialogDescription>
@@ -99,7 +103,7 @@ const UpsertProductDialogContent = ({
                     onValueChange={(values) =>
                       field.onChange(values.floatValue)
                     }
-                    value={field.value || ""}
+                    value={field.value || 0.0}
                   />
                 </FormControl>
                 <FormMessage />

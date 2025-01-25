@@ -24,6 +24,9 @@ import {
   TrashIcon,
 } from "lucide-react";
 import AlertDialogDelete from "./delete-dialog";
+import { Dialog, DialogTrigger } from "@/app/_components/ui/dialog";
+import UpsertProductDialogContent from "./upsert-product-dialog";
+import { useState } from "react";
 
 const getStatusLabel = (status: string) => {
   if (status === "IN_STOCK") {
@@ -66,37 +69,53 @@ export const productTableColumns: ColumnDef<Product>[] = [
     accessorKey: "actions",
     header: "Ações",
     cell: (row) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [dialogIsOpen, setDialogIsOpen] = useState(false);
       const product = row.row.original;
       return (
         <AlertDialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant={"ghost"}>
-                <MoreHorizontalIcon size={16} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Ações</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer gap-1.5">
-                <EditIcon size={16} /> Editar
-              </DropdownMenuItem>
+          <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant={"ghost"}>
+                  <MoreHorizontalIcon size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuSeparator />
 
-              <AlertDialogTrigger asChild>
-                <DropdownMenuItem className="cursor-pointer gap-1.5">
-                  <TrashIcon size={16} /> Deletar
+                <DialogTrigger asChild>
+                  <DropdownMenuItem className="cursor-pointer gap-1.5">
+                    <EditIcon size={16} /> Editar
+                  </DropdownMenuItem>
+                </DialogTrigger>
+
+                <AlertDialogTrigger asChild>
+                  <DropdownMenuItem className="cursor-pointer gap-1.5">
+                    <TrashIcon size={16} /> Deletar
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+
+                <DropdownMenuItem
+                  className="cursor-pointer gap-1.5"
+                  onClick={() => navigator.clipboard.writeText(product.id)}
+                >
+                  <ClipboardCopyIcon size={16} /> Copiar ID
                 </DropdownMenuItem>
-              </AlertDialogTrigger>
-
-              <DropdownMenuItem
-                className="cursor-pointer gap-1.5"
-                onClick={() => navigator.clipboard.writeText(product.id)}
-              >
-                <ClipboardCopyIcon size={16} /> Copiar ID
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <AlertDialogDelete productId={product.id} />
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <UpsertProductDialogContent
+              defaultValues={{
+                id: product.id,
+                name: product.name,
+                price: Number(product.price),
+                stock: product.stock,
+              }}
+              onSuccess={() => setDialogIsOpen(false)}
+            />
+            <AlertDialogDelete productId={product.id} />
+          </Dialog>
         </AlertDialog>
       );
     },
