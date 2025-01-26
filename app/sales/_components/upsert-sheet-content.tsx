@@ -34,6 +34,7 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formatCurrency } from "../_helpers/currency";
+import SheetDropdownMenu from "./sheet-dropdown-menu";
 
 const formSchema = z.object({
   productId: z.string().uuid({
@@ -115,6 +116,12 @@ const UpsertSheetContent = ({
     }, 0);
   }, [selectedProducts]);
 
+  const handleDeleteProduct = (productId: string) => {
+    setSelectedProducts((currentProduct) => {
+      return currentProduct.filter((product) => product.id !== productId);
+    });
+  };
+
   return (
     <SheetContent className="!max-w-[700px]">
       <SheetHeader>
@@ -176,6 +183,7 @@ const UpsertSheetContent = ({
             <TableHead>Preço unitário</TableHead>
             <TableHead>Quantidade</TableHead>
             <TableHead>Total</TableHead>
+            <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -187,12 +195,18 @@ const UpsertSheetContent = ({
               <TableCell>
                 {formatCurrency(product.price * product.quantity)}
               </TableCell>
+              <TableCell>
+                <SheetDropdownMenu
+                  deleteProduct={handleDeleteProduct}
+                  product={product}
+                />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell colSpan={4}>Total</TableCell>
             <TableCell>{formatCurrency(productTotal)}</TableCell>
           </TableRow>
         </TableFooter>
