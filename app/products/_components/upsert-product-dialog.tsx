@@ -1,8 +1,8 @@
-import { upsertProduct } from "@/app/_actions/create-product";
+import { upsertProduct } from "@/app/_actions/products/create-product";
 import {
   upsertProductSchema,
   UpsertProductSchema,
-} from "@/app/_actions/create-product/schema";
+} from "@/app/_actions/products/create-product/schema";
 import { Button } from "@/app/_components/ui/button";
 import {
   DialogClose,

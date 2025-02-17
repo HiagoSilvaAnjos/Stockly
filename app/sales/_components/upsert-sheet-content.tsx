@@ -14,6 +14,7 @@ import { Input } from "@/app/_components/ui/input";
 import {
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/app/_components/ui/sheet";
@@ -29,12 +30,14 @@ import {
 } from "@/app/_components/ui/table";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Product } from "@prisma/client";
-import { PlusIcon } from "lucide-react";
+import { CheckIcon, PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formatCurrency } from "../_helpers/currency";
 import SheetDropdownMenu from "./sheet-dropdown-menu";
+import { CreateSale } from "@/app/_actions/sales/create_sale";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   productId: z.string().uuid({
@@ -50,6 +53,7 @@ type FormSchema = z.infer<typeof formSchema>;
 interface UpsertSheetContentProps {
   products: Product[];
   productOptions: ComboboxOption[];
+  onSaleSuccess: () => void;
 }
 
 interface SeletedProductProps {
@@ -61,6 +65,7 @@ interface SeletedProductProps {
 const UpsertSheetContent = ({
   productOptions,
   products,
+  onSaleSuccess,
 }: UpsertSheetContentProps) => {
   const [selectedProducts, setSelectedProducts] = useState<
     SeletedProductProps[]
@@ -139,6 +144,23 @@ const UpsertSheetContent = ({
     setSelectedProducts((currentProduct) => {
       return currentProduct.filter((product) => product.id !== productId);
     });
+  };
+
+  const onSubmitSale = async () => {
+    try {
+      await CreateSale({
+        products: selectedProducts.map((product) => ({
+          id: product.id,
+          quantity: product.quantity,
+        })),
+      });
+
+      toast.success("Venda criada com sucesso!");
+      onSaleSuccess();
+    } catch (error) {
+      toast.error("Ocorreu um erro ao tentar adicionar a venda");
+      console.log(error);
+    }
   };
 
   return (
@@ -230,6 +252,17 @@ const UpsertSheetContent = ({
           </TableRow>
         </TableFooter>
       </Table>
+
+      <SheetFooter className="pt-4">
+        <Button
+          className="w-full"
+          disabled={selectedProducts.length === 0}
+          onClick={onSubmitSale}
+        >
+          <CheckIcon size={20} />
+          Finalizar Venda
+        </Button>
+      </SheetFooter>
     </SheetContent>
   );
 };
