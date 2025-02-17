@@ -12,6 +12,9 @@ const sales = async () => {
     label: product.name,
   }));
 
+  console.log(products);
+  console.log(productOptions);
+
   return (
     <div className="m-8 w-full space-y-8 rounded-lg bg-white p-8">
       <div className="flex w-full items-center justify-between">
