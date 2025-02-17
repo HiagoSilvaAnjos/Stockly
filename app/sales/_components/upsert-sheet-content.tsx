@@ -31,7 +31,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Product } from "@prisma/client";
 import { CheckIcon, PlusIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formatCurrency } from "../_helpers/currency";
@@ -53,7 +53,7 @@ type FormSchema = z.infer<typeof formSchema>;
 interface UpsertSheetContentProps {
   products: Product[];
   productOptions: ComboboxOption[];
-  onSaleSuccess: () => void;
+  setIsOpenSheet: Dispatch<SetStateAction<boolean>>;
 }
 
 interface SeletedProductProps {
@@ -65,7 +65,7 @@ interface SeletedProductProps {
 const UpsertSheetContent = ({
   productOptions,
   products,
-  onSaleSuccess,
+  setIsOpenSheet,
 }: UpsertSheetContentProps) => {
   const [selectedProducts, setSelectedProducts] = useState<
     SeletedProductProps[]
@@ -156,7 +156,7 @@ const UpsertSheetContent = ({
       });
 
       toast.success("Venda criada com sucesso!");
-      onSaleSuccess();
+      setIsOpenSheet(false);
     } catch (error) {
       toast.error("Ocorreu um erro ao tentar adicionar a venda");
       console.log(error);
