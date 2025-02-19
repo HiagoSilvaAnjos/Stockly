@@ -38,6 +38,7 @@ import { formatCurrency } from "../_helpers/currency";
 import SheetDropdownMenu from "./sheet-dropdown-menu";
 import { CreateSale } from "@/app/_actions/sales/create_sale";
 import { toast } from "sonner";
+import { useAction } from "next-safe-action/hooks";
 
 const formSchema = z.object({
   productId: z.string().uuid({
@@ -71,6 +72,17 @@ const UpsertSheetContent = ({
     SeletedProductProps[]
   >([]);
 
+  const { execute: executeCreateSale } = useAction(CreateSale, {
+    onError: (error) => {
+      toast.error("Erro ao salvar a venda. Tente novamente.");
+      console.error(error);
+    },
+    onSuccess: () => {
+      toast.success("Venda salva com sucesso.");
+      setIsOpenSheet(false);
+    },
+  });
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -92,16 +104,16 @@ const UpsertSheetContent = ({
       );
 
       if (existingProduct) {
-        const productIsOutOfStock =
-          existingProduct.quantity + data.quantity > selectedProduct.stock;
+        // const productIsOutOfStock =
+        //   existingProduct.quantity + data.quantity > selectedProduct.stock;
 
-        if (productIsOutOfStock) {
-          form.setError("quantity", {
-            message: "Quantidade indisponível em estoque",
-          });
+        // if (productIsOutOfStock) {
+        //   form.setError("quantity", {
+        //     message: "Quantidade indisponível em estoque",
+        //   });
 
-          return currentProduct;
-        }
+        //   return currentProduct;
+        // }
         form.reset();
         return currentProduct.map((product) => {
           if (product.id !== data.productId) return product;
@@ -113,15 +125,15 @@ const UpsertSheetContent = ({
         });
       }
 
-      const productIsOutOfStock = data.quantity > selectedProduct.stock;
+      // const productIsOutOfStock = data.quantity > selectedProduct.stock;
 
-      if (productIsOutOfStock) {
-        form.setError("quantity", {
-          message: "Quantidade indisponível em estoque",
-        });
+      // if (productIsOutOfStock) {
+      //   form.setError("quantity", {
+      //     message: "Quantidade indisponível em estoque",
+      //   });
 
-        return currentProduct;
-      }
+      //   return currentProduct;
+      // }
       form.reset();
       return [
         ...currentProduct,
@@ -147,20 +159,12 @@ const UpsertSheetContent = ({
   };
 
   const onSubmitSale = async () => {
-    try {
-      await CreateSale({
-        products: selectedProducts.map((product) => ({
-          id: product.id,
-          quantity: product.quantity,
-        })),
-      });
-
-      toast.success("Venda criada com sucesso!");
-      setIsOpenSheet(false);
-    } catch (error) {
-      toast.error("Ocorreu um erro ao tentar adicionar a venda");
-      console.log(error);
-    }
+    executeCreateSale({
+      products: selectedProducts.map((product) => ({
+        id: product.id,
+        quantity: product.quantity,
+      })),
+    });
   };
 
   return (
