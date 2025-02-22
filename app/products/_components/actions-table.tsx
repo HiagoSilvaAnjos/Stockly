@@ -71,7 +71,7 @@ const ProductActionsTable = ({ product }: ProductActionsTableProps) => {
             price: Number(product.price),
             stock: product.stock,
           }}
-          onSuccess={() => setDialogIsOpen(false)}
+          setDialogIsOpen={setDialogIsOpen}
         />
         <AlertDialogDelete productId={product.id} />
       </Dialog>

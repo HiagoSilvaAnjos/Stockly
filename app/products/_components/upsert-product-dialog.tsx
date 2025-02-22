@@ -23,18 +23,33 @@ import {
 import { Input } from "@/app/_components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
+import { flattenValidationErrors } from "next-safe-action";
+import { useAction } from "next-safe-action/hooks";
+import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
+import { toast } from "sonner";
 
 interface UpsertProductDialogContentProps {
   defaultValues?: UpsertProductSchema;
-  onSuccess?: () => void;
+  setDialogIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const UpsertProductDialogContent = ({
-  onSuccess,
+  setDialogIsOpen,
   defaultValues,
 }: UpsertProductDialogContentProps) => {
+  const { execute: executeCreateProduct } = useAction(upsertProduct, {
+    onError: ({ error: { validationErrors, serverError } }) => {
+      const flattenErrors = flattenValidationErrors(validationErrors);
+      toast.error(serverError ?? flattenErrors.formErrors[0]);
+    },
+    onSuccess: () => {
+      setDialogIsOpen(false);
+      toast.success("Produto salvo com sucesso!");
+    },
+  });
+
   // Configuração do React Hook Form
   const form = useForm<UpsertProductSchema>({
     shouldUnregister: true,
@@ -46,22 +61,15 @@ const UpsertProductDialogContent = ({
     },
   });
 
-  // Função para tratar submissão do formulário
-  const onSubmit = async (data: UpsertProductSchema) => {
-    try {
-      await upsertProduct({ ...data, id: defaultValues?.id });
-      onSuccess?.();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const isEditing = !!defaultValues;
 
   return (
     <DialogContent>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit(executeCreateProduct)}
+          className="space-y-4"
+        >
           <DialogHeader>
             <DialogTitle>{isEditing ? "Editar" : "Criar"} Produto</DialogTitle>
             <DialogDescription>
