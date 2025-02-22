@@ -39,6 +39,7 @@ import SheetDropdownMenu from "./sheet-dropdown-menu";
 import { CreateSale } from "@/app/_actions/sales/create_sale";
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
+import { flattenValidationErrors } from "next-safe-action";
 
 const formSchema = z.object({
   productId: z.string().uuid({
@@ -73,9 +74,9 @@ const UpsertSheetContent = ({
   >([]);
 
   const { execute: executeCreateSale } = useAction(CreateSale, {
-    onError: (error) => {
-      toast.error("Erro ao salvar a venda. Tente novamente.");
-      console.error(error);
+    onError: ({ error: { validationErrors, serverError } }) => {
+      const flattenedErrors = flattenValidationErrors(validationErrors);
+      toast.error(serverError ?? flattenedErrors.formErrors[0]);
     },
     onSuccess: () => {
       toast.success("Venda salva com sucesso.");
@@ -104,16 +105,16 @@ const UpsertSheetContent = ({
       );
 
       if (existingProduct) {
-        // const productIsOutOfStock =
-        //   existingProduct.quantity + data.quantity > selectedProduct.stock;
+        const productIsOutOfStock =
+          existingProduct.quantity + data.quantity > selectedProduct.stock;
 
-        // if (productIsOutOfStock) {
-        //   form.setError("quantity", {
-        //     message: "Quantidade indisponível em estoque",
-        //   });
+        if (productIsOutOfStock) {
+          form.setError("quantity", {
+            message: "Quantidade indisponível em estoque",
+          });
 
-        //   return currentProduct;
-        // }
+          return currentProduct;
+        }
         form.reset();
         return currentProduct.map((product) => {
           if (product.id !== data.productId) return product;
@@ -125,15 +126,15 @@ const UpsertSheetContent = ({
         });
       }
 
-      // const productIsOutOfStock = data.quantity > selectedProduct.stock;
+      const productIsOutOfStock = data.quantity > selectedProduct.stock;
 
-      // if (productIsOutOfStock) {
-      //   form.setError("quantity", {
-      //     message: "Quantidade indisponível em estoque",
-      //   });
+      if (productIsOutOfStock) {
+        form.setError("quantity", {
+          message: "Quantidade indisponível em estoque",
+        });
 
-      //   return currentProduct;
-      // }
+        return currentProduct;
+      }
       form.reset();
       return [
         ...currentProduct,
