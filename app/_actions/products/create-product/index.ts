@@ -7,11 +7,11 @@ import { actionClient } from "@/app/_lib/next-safe-action";
 
 export const upsertProduct = actionClient
   .schema(upsertProductSchema)
-  .action(async ({ parsedInput: product }) => {
+  .action(async ({ parsedInput: { id, ...data } }) => {
     await db.product.upsert({
-      where: { id: product.id ?? "" },
-      update: product,
-      create: product,
+      where: { id: id ?? "" },
+      update: data,
+      create: data,
     });
 
     revalidatePath("/products");
