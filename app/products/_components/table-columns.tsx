@@ -1,9 +1,9 @@
 "use client";
 
 import { Badge } from "@/app/_components/ui/badge";
-import { Product } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import ProductActionsTable from "./actions-table";
+import { GetProductsDTO } from "@/app/_data-access/product/get-products";
 
 const getStatusLabel = (status: string) => {
   if (status === "IN_STOCK") {
@@ -12,7 +12,7 @@ const getStatusLabel = (status: string) => {
   return "Fora de estoque";
 };
 
-export const productTableColumns: ColumnDef<Product>[] = [
+export const productTableColumns: ColumnDef<GetProductsDTO>[] = [
   {
     accessorKey: "name",
     header: "Produto",

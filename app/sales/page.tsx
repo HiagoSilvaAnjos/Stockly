@@ -1,8 +1,12 @@
+import { DataTable } from "../_components/ui/data-table";
 import getProducts from "../_data-access/product/get-products";
+import { getSales } from "../_data-access/Sale/get-sales";
 import CreateSaleButton from "./_components/create-sale-button";
+import { SaleTableColumns } from "./_components/table-comlumns";
 
 const sales = async () => {
   const products = await getProducts();
+  const sales = await getSales();
 
   const productOptions = products.map((product) => ({
     value: product.id,
@@ -21,10 +25,10 @@ const sales = async () => {
 
         <CreateSaleButton products={products} productOptions={productOptions} />
       </div>
-      {/* <DataTable
-        columns={productTableColumns}
-        data={JSON.parse(JSON.stringify(products))}
-      /> */}
+      <DataTable
+        columns={SaleTableColumns}
+        data={JSON.parse(JSON.stringify(sales))}
+      />
     </div>
   );
 };
