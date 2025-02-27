@@ -2,7 +2,7 @@ import { DataTable } from "../_components/ui/data-table";
 import getProducts from "../_data-access/product/get-products";
 import { getSales } from "../_data-access/Sale/get-sales";
 import CreateSaleButton from "./_components/create-sale-button";
-import { SaleTableColumns } from "./_components/table-comlumns";
+import { SaleTableColumns } from "./_components/table-columns";
 
 const sales = async () => {
   const products = await getProducts();

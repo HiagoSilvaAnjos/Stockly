@@ -2,7 +2,7 @@
 
 import { Badge } from "@/app/_components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
-import ProductActionsTable from "./actions-table";
+import ProductActionsTable from "./table-dropdown-menu";
 import { GetProductsDTO } from "@/app/_data-access/product/get-products";
 
 const getStatusLabel = (status: string) => {

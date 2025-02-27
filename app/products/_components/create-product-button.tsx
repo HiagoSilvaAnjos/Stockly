@@ -5,7 +5,7 @@ import { Dialog, DialogTrigger } from "@/app/_components/ui/dialog";
 import { PlusIcon } from "lucide-react";
 
 import { useState } from "react";
-import UpsertProductDialogContent from "./upsert-product-dialog";
+import UpsertProductDialogContent from "./upsert-dialog-content";
 
 const AddProductButton = () => {
   // Definição do schema de validação

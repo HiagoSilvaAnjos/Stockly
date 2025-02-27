@@ -1,10 +1,18 @@
 "use client";
 
-import { Button } from "@/app/_components/ui/button";
 import {
   AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/app/_components/ui/alert-dialog";
+import { Button } from "@/app/_components/ui/button";
+import { Dialog, DialogTrigger } from "@/app/_components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,17 +27,9 @@ import {
   MoreHorizontalIcon,
   TrashIcon,
 } from "lucide-react";
-import AlertDialogDelete from "./delete-dialog";
-import { Dialog, DialogTrigger } from "@/app/_components/ui/dialog";
-import UpsertProductDialogContent from "./upsert-product-dialog";
 import { useState } from "react";
-import { Product } from "@prisma/client";
 
-interface ProductActionsTableProps {
-  product: Product;
-}
-
-const ProductActionsTable = ({ product }: ProductActionsTableProps) => {
+const SalesTableDropDownMenu = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   return (
     <AlertDialog>
@@ -58,25 +58,31 @@ const ProductActionsTable = ({ product }: ProductActionsTableProps) => {
 
             <DropdownMenuItem
               className="cursor-pointer gap-1.5"
-              onClick={() => navigator.clipboard.writeText(product.id)}
+              onClick={() => {}}
             >
               <ClipboardCopyIcon size={16} /> Copiar ID
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <UpsertProductDialogContent
-          defaultValues={{
-            id: product.id,
-            name: product.name,
-            price: Number(product.price),
-            stock: product.stock,
-          }}
-          setDialogIsOpen={setDialogIsOpen}
-        />
-        <AlertDialogDelete productId={product.id} />
+
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Você realmente deseja excluir este produto?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Você esta prestes a excluir este produto. Esta ação não pode ser
+              desfeita. Deseja continuar ?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction>Continuar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
       </Dialog>
     </AlertDialog>
   );
 };
 
-export default ProductActionsTable;
+export default SalesTableDropDownMenu;
