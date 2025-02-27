@@ -4,6 +4,7 @@ import { MoreHorizontalIcon } from "lucide-react";
 import { formatCurrency } from "../_helpers/currency";
 import { ColumnDef } from "@tanstack/react-table";
 import { GetSalesDTO } from "@/app/_data-access/Sale/get-sales";
+import { Button } from "@/app/_components/ui/button";
 
 export const SaleTableColumns: ColumnDef<GetSalesDTO>[] = [
   {
@@ -38,9 +39,9 @@ export const SaleTableColumns: ColumnDef<GetSalesDTO>[] = [
     header: "Ações",
     accessorKey: "actions",
     cell: () => (
-      <button>
+      <Button variant={"ghost"}>
         <MoreHorizontalIcon size={16} />
-      </button>
+      </Button>
     ),
   },
 ];
