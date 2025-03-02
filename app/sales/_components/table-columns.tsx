@@ -37,6 +37,9 @@ export const SaleTableColumns: ColumnDef<GetSalesDTO>[] = [
   {
     header: "Ações",
     accessorKey: "actions",
-    cell: () => <SalesTableDropDownMenu />,
+    cell: ({ row }) => {
+      const SaleID = row.original;
+      return <SalesTableDropDownMenu Sale={SaleID} />;
+    },
   },
 ];
