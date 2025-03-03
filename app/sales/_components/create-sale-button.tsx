@@ -13,7 +13,7 @@ interface UpsertSheetContentProps {
   productOptions: ComboboxOption[];
 }
 
-const CreateSaleButton = ({
+const UpsertSaleButton = ({
   products,
   productOptions,
 }: UpsertSheetContentProps) => {
@@ -35,4 +35,4 @@ const CreateSaleButton = ({
   );
 };
 
-export default CreateSaleButton;
+export default UpsertSaleButton;

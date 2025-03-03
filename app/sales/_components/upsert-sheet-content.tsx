@@ -34,7 +34,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formatCurrency } from "../_helpers/currency";
-import { CreateSale } from "@/app/_actions/sales/create_sale";
+import { UpsertSale } from "@/app/_actions/sales/upsert_sale";
 import { toast } from "sonner";
 import { useAction } from "next-safe-action/hooks";
 import { flattenValidationErrors } from "next-safe-action";
@@ -60,12 +60,14 @@ interface SeletedProductProps {
 }
 
 interface UpsertSheetContentProps {
+  saleId?: string;
   products: GetProductsDTO[];
   productOptions: ComboboxOption[];
   setIsOpenSheet: Dispatch<SetStateAction<boolean>>;
   defaultSeletedProducts?: SeletedProductProps[];
 }
 const UpsertSheetContent = ({
+  saleId,
   productOptions,
   products,
   setIsOpenSheet,
@@ -75,7 +77,7 @@ const UpsertSheetContent = ({
     SeletedProductProps[]
   >(defaultSeletedProducts ?? []);
 
-  const { execute: executeCreateSale } = useAction(CreateSale, {
+  const { execute: executeUpsertSale } = useAction(UpsertSale, {
     onError: ({ error: { validationErrors, serverError } }) => {
       const flattenedErrors = flattenValidationErrors(validationErrors);
       toast.error(serverError ?? flattenedErrors.formErrors[0]);
@@ -162,7 +164,8 @@ const UpsertSheetContent = ({
   };
 
   const onSubmitSale = async () => {
-    executeCreateSale({
+    executeUpsertSale({
+      id: saleId,
       products: selectedProducts.map((product) => ({
         id: product.id,
         quantity: product.quantity,

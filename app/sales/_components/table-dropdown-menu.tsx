@@ -47,7 +47,7 @@ const SalesTableDropDownMenu = ({
   products,
   productsOptions,
 }: SaleTableDropDownMenuProps) => {
-  const [sheetIsOpen, setSheetIsOpen] = useState(false);
+  const [sheetIsOpen, setIsOpenSheet] = useState(false);
 
   const { execute: executeDeleteSale } = useAction(deleteSale, {
     onSuccess: () => {
@@ -67,7 +67,7 @@ const SalesTableDropDownMenu = ({
     executeDeleteSale({ id: Sale.id });
 
   return (
-    <Sheet defaultOpen={sheetIsOpen} onOpenChange={setSheetIsOpen}>
+    <Sheet open={sheetIsOpen} onOpenChange={setIsOpenSheet}>
       <AlertDialog>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -119,9 +119,10 @@ const SalesTableDropDownMenu = ({
         </AlertDialogContent>
       </AlertDialog>
       <UpsertSheetContent
+        saleId={Sale.id}
         products={products}
         productOptions={productsOptions}
-        setIsOpenSheet={setSheetIsOpen}
+        setIsOpenSheet={setIsOpenSheet}
         defaultSeletedProducts={Sale.saleProducts.map((saleProduct) => ({
           id: saleProduct.productId,
           name: saleProduct.productName,
