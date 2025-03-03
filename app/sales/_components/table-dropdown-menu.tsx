@@ -22,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/app/_components/ui/dropdown-menu";
+import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet";
 import { Sale } from "@prisma/client";
 import {
   ClipboardCopyIcon,
@@ -31,14 +32,23 @@ import {
 } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
-// import { useState } from "react";
+import UpsertSheetContent from "./upsert-sheet-content";
+import { useState } from "react";
+import { GetProductsDTO } from "@/app/_data-access/product/get-products";
+import { ComboboxOption } from "@/app/_components/ui/combobox";
 
 interface SaleTableDropDownMenuProps {
   Sale: Pick<Sale, "id">;
+  products: GetProductsDTO[];
+  productsOptions: ComboboxOption[];
 }
 
-const SalesTableDropDownMenu = ({ Sale }: SaleTableDropDownMenuProps) => {
-  // const [dialogIsOpen, setDialogIsOpen] = useState(false);
+const SalesTableDropDownMenu = ({
+  Sale,
+  products,
+  productsOptions,
+}: SaleTableDropDownMenuProps) => {
+  const [sheetIsOpen, setSheetIsOpen] = useState(false);
 
   const { execute: executeDeleteSale } = useAction(deleteSale, {
     onSuccess: () => {
@@ -58,58 +68,63 @@ const SalesTableDropDownMenu = ({ Sale }: SaleTableDropDownMenuProps) => {
     executeDeleteSale({ id: Sale.id });
 
   return (
-    <AlertDialog>
-      {/* <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}> */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant={"ghost"}>
-            <MoreHorizontalIcon size={16} />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>Ações</DropdownMenuLabel>
-          <DropdownMenuSeparator />
+    <Sheet defaultOpen={sheetIsOpen} onOpenChange={setSheetIsOpen}>
+      <AlertDialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant={"ghost"}>
+              <MoreHorizontalIcon size={16} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <DropdownMenuSeparator />
 
-          {/* <DialogTrigger asChild> */}
-          <DropdownMenuItem className="cursor-pointer gap-1.5">
-            <EditIcon size={16} /> Editar
-          </DropdownMenuItem>
-          {/* </DialogTrigger> */}
+            <SheetTrigger asChild>
+              <DropdownMenuItem className="cursor-pointer gap-1.5">
+                <EditIcon size={16} /> Editar
+              </DropdownMenuItem>
+            </SheetTrigger>
 
-          <AlertDialogTrigger asChild>
-            <DropdownMenuItem className="cursor-pointer gap-1.5">
-              <TrashIcon size={16} /> Deletar
+            <AlertDialogTrigger asChild>
+              <DropdownMenuItem className="cursor-pointer gap-1.5">
+                <TrashIcon size={16} /> Deletar
+              </DropdownMenuItem>
+            </AlertDialogTrigger>
+
+            <DropdownMenuItem
+              className="cursor-pointer gap-1.5"
+              onClick={handleCopyClipboardClock}
+            >
+              <ClipboardCopyIcon size={16} /> Copiar ID
             </DropdownMenuItem>
-          </AlertDialogTrigger>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-          <DropdownMenuItem
-            className="cursor-pointer gap-1.5"
-            onClick={handleCopyClipboardClock}
-          >
-            <ClipboardCopyIcon size={16} /> Copiar ID
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            Você realmente deseja excluir esta venda?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Você esta prestes a excluir esta venda. Esta ação não pode ser
-            desfeita. Deseja continuar ?
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={handleComfirmDeleteClick}>
-            Continuar
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-      {/* </Dialog> */}
-    </AlertDialog>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Você realmente deseja excluir esta venda?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Você esta prestes a excluir esta venda. Esta ação não pode ser
+              desfeita. Deseja continuar ?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleComfirmDeleteClick}>
+              Continuar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <UpsertSheetContent
+        products={products}
+        productOptions={productsOptions}
+        setIsOpenSheet={setSheetIsOpen}
+      />
+    </Sheet>
   );
 };
 

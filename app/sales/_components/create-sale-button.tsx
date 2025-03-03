@@ -4,12 +4,12 @@ import { Button } from "@/app/_components/ui/button";
 import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet";
 import { PlusIcon } from "lucide-react";
 import UpsertSheetContent from "./upsert-sheet-content";
-import { Product } from "@prisma/client";
 import { ComboboxOption } from "@/app/_components/ui/combobox";
 import { useState } from "react";
+import { GetProductsDTO } from "@/app/_data-access/product/get-products";
 
 interface UpsertSheetContentProps {
-  products: Product[];
+  products: GetProductsDTO[];
   productOptions: ComboboxOption[];
 }
 

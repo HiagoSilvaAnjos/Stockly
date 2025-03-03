@@ -4,8 +4,15 @@ import { formatCurrency } from "../_helpers/currency";
 import { ColumnDef } from "@tanstack/react-table";
 import { GetSalesDTO } from "@/app/_data-access/Sale/get-sales";
 import SalesTableDropDownMenu from "./table-dropdown-menu";
+import { GetProductsDTO } from "@/app/_data-access/product/get-products";
+import { ComboboxOption } from "@/app/_components/ui/combobox";
 
-export const SaleTableColumns: ColumnDef<GetSalesDTO>[] = [
+interface SaleTableColumn extends GetSalesDTO {
+  products: GetProductsDTO[];
+  productOptions: ComboboxOption[];
+}
+
+export const SaleTableColumns: ColumnDef<SaleTableColumn>[] = [
   {
     accessorKey: "productNames",
     header: "Produtos",
@@ -38,8 +45,14 @@ export const SaleTableColumns: ColumnDef<GetSalesDTO>[] = [
     header: "Ações",
     accessorKey: "actions",
     cell: ({ row }) => {
-      const SaleID = row.original;
-      return <SalesTableDropDownMenu Sale={SaleID} />;
+      const SaleProduct = row.original;
+      return (
+        <SalesTableDropDownMenu
+          Sale={SaleProduct}
+          products={SaleProduct.products}
+          productsOptions={SaleProduct.productOptions}
+        />
+      );
     },
   },
 ];
