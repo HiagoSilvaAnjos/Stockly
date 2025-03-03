@@ -13,7 +13,6 @@ import {
   AlertDialogTrigger,
 } from "@/app/_components/ui/alert-dialog";
 import { Button } from "@/app/_components/ui/button";
-// import { Dialog, DialogTrigger } from "@/app/_components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +22,6 @@ import {
   DropdownMenuTrigger,
 } from "@/app/_components/ui/dropdown-menu";
 import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet";
-import { Sale } from "@prisma/client";
 import {
   ClipboardCopyIcon,
   EditIcon,
@@ -36,9 +34,10 @@ import UpsertSheetContent from "./upsert-sheet-content";
 import { useState } from "react";
 import { GetProductsDTO } from "@/app/_data-access/product/get-products";
 import { ComboboxOption } from "@/app/_components/ui/combobox";
+import { GetSalesDTO } from "@/app/_data-access/Sale/get-sales";
 
 interface SaleTableDropDownMenuProps {
-  Sale: Pick<Sale, "id">;
+  Sale: Pick<GetSalesDTO, "id" | "saleProducts">;
   products: GetProductsDTO[];
   productsOptions: ComboboxOption[];
 }
@@ -123,6 +122,12 @@ const SalesTableDropDownMenu = ({
         products={products}
         productOptions={productsOptions}
         setIsOpenSheet={setSheetIsOpen}
+        defaultSeletedProducts={Sale.saleProducts.map((saleProduct) => ({
+          id: saleProduct.productId,
+          name: saleProduct.productName,
+          price: saleProduct.unitPrice,
+          quantity: saleProduct.quantity,
+        }))}
       />
     </Sheet>
   );
