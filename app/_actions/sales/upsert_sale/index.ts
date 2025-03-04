@@ -93,4 +93,5 @@ export const UpsertSale = actionClient
     });
     revalidatePath("/products");
     revalidatePath("/sales");
+    revalidatePath("/");
   });
