@@ -2,8 +2,9 @@ import { db } from "@/app/_lib/prisma";
 import { Product } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
+export type ProductStatusDto = "IN_STOCK" | "OUT_OF_STOCK";
 export interface GetProductsDTO extends Product {
-  status: "IN_STOCK" | "OUT_OF_STOCK";
+  status: ProductStatusDto;
 }
 
 const getProducts = async (): Promise<GetProductsDTO[]> => {

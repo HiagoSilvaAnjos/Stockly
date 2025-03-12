@@ -1,16 +1,9 @@
 "use client";
 
-import { Badge } from "@/app/_components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
 import ProductActionsTable from "./table-dropdown-menu";
 import { GetProductsDTO } from "@/app/_data-access/product/get-products";
-
-const getStatusLabel = (status: string) => {
-  if (status === "IN_STOCK") {
-    return "Em estoque";
-  }
-  return "Fora de estoque";
-};
+import ProductStatusBadge from "@/app/_components/StatusBadge/product-status-badge";
 
 export const productTableColumns: ColumnDef<GetProductsDTO>[] = [
   {
@@ -38,15 +31,7 @@ export const productTableColumns: ColumnDef<GetProductsDTO>[] = [
     cell: (row) => {
       const product = row.row.original;
       const status = product.stock > 0 ? "IN_STOCK" : "OUT_OF_STOCK";
-      const label = getStatusLabel(status);
-      return (
-        <Badge
-          className="gap-1"
-          variant={status === "IN_STOCK" ? "primary" : "destructive"}
-        >
-          {label}
-        </Badge>
-      );
+      return <ProductStatusBadge status={status} />;
     },
   },
   {
