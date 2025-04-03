@@ -8,11 +8,11 @@ import RevenueChart from "./_components/revenue-chart";
 import MostSoldProductItem from "./_components/most-sold-products-item";
 import { Suspense } from "react";
 import TotalRevenueCard from "./_components/total-revenue-card";
-import { Skeleton } from "../_components/ui/skeleton";
 import RevenueTodayCard from "./_components/revenue-today-card";
 import TotalSalesCard from "./_components/total-sales-card";
 import TotalStockCard from "./_components/total-stock-card";
 import TotalProductsCard from "./_components/total-products-card";
+import { SummaryCardSkeleton } from "./_components/summary-card";
 
 const Home = async () => {
   const { totalLast14DaysRevenue, mostSoldProducts } = await getDashboard();
@@ -26,44 +26,24 @@ const Home = async () => {
         </HeaderLeft>
       </Header>
       <div className="grid grid-cols-2 gap-6">
-        <Suspense
-          fallback={
-            <Skeleton className="rounded-xl bg-slate-300 bg-opacity-50" />
-          }
-        >
+        <Suspense fallback={<SummaryCardSkeleton />}>
           <TotalRevenueCard />
         </Suspense>
 
-        <Suspense
-          fallback={
-            <Skeleton className="h-full w-full rounded-xl bg-white bg-opacity-50" />
-          }
-        >
+        <Suspense fallback={<SummaryCardSkeleton />}>
           <RevenueTodayCard />
         </Suspense>
       </div>
       <div className="grid grid-cols-3 gap-6">
-        <Suspense
-          fallback={
-            <Skeleton className="h-full w-full rounded-xl bg-white bg-opacity-50" />
-          }
-        >
+        <Suspense fallback={<SummaryCardSkeleton />}>
           <TotalSalesCard />
         </Suspense>
 
-        <Suspense
-          fallback={
-            <Skeleton className="h-full w-full rounded-xl bg-white bg-opacity-50" />
-          }
-        >
+        <Suspense fallback={<SummaryCardSkeleton />}>
           <TotalStockCard />
         </Suspense>
 
-        <Suspense
-          fallback={
-            <Skeleton className="h-full w-full rounded-xl bg-white bg-opacity-50" />
-          }
-        >
+        <Suspense fallback={<SummaryCardSkeleton />}>
           <TotalProductsCard />
         </Suspense>
       </div>
