@@ -1,6 +1,5 @@
 import {
   CircleDollarSignIcon,
-  DollarSignIcon,
   PackageIcon,
   ShoppingBasketIcon,
 } from "lucide-react";
@@ -16,16 +15,15 @@ import {
   SummaryCardValue,
 } from "./_components/summary-card";
 import { getDashboard } from "../_data-access/dashboard/get-dashboard";
-import { formatCurrency } from "../sales/_helpers/currency";
 import RevenueChart from "./_components/revenue-chart";
 import MostSoldProductItem from "./_components/most-sold-products-item";
 import { Suspense } from "react";
 import TotalRevenueCard from "./_components/total_revenue-card";
 import { Skeleton } from "../_components/ui/skeleton";
+import RevenueTodayCard from "./_components/revenue-today-card";
 
 const Home = async () => {
   const {
-    todayRevenue,
     totalProducts,
     totalSales,
     totalStock,
@@ -49,13 +47,14 @@ const Home = async () => {
         >
           <TotalRevenueCard />
         </Suspense>
-        <SummaryCard>
-          <SummaryCardIcon>
-            <DollarSignIcon />
-          </SummaryCardIcon>
-          <SummaryCardTitle>Receita Hoje</SummaryCardTitle>
-          <SummaryCardValue>{formatCurrency(todayRevenue)}</SummaryCardValue>
-        </SummaryCard>
+
+        <Suspense
+          fallback={
+            <Skeleton className="h-full w-full rounded-xl bg-white bg-opacity-50" />
+          }
+        >
+          <RevenueTodayCard />
+        </Suspense>
       </div>
       <div className="grid grid-cols-3 gap-6">
         <SummaryCard>
@@ -80,7 +79,7 @@ const Home = async () => {
           <SummaryCardValue>{totalProducts}</SummaryCardValue>
         </SummaryCard>
       </div>
-      <div className="grid min-h-0 grid-cols-[minmax(0,2.5fr),minmax(0,1fr)] gap-6">
+      <div className="grid h-[400px] grid-cols-[minmax(0,2.5fr),minmax(0,1fr)] gap-6">
         <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white p-6">
           <p className="text-lg font-semibold text-slate-900">Receita</p>
           <p className="text-sm text-slate-400">Últimos 14 dias</p>
