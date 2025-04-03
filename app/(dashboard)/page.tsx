@@ -4,7 +4,6 @@ import Header, {
   HeaderTitle,
 } from "../_components/Header/Header";
 import { getDashboard } from "../_data-access/dashboard/get-dashboard";
-import RevenueChart from "./_components/revenue-chart";
 import MostSoldProductItem from "./_components/most-sold-products-item";
 import { Suspense } from "react";
 import TotalRevenueCard from "./_components/total-revenue-card";
@@ -13,9 +12,11 @@ import TotalSalesCard from "./_components/total-sales-card";
 import TotalStockCard from "./_components/total-stock-card";
 import TotalProductsCard from "./_components/total-products-card";
 import { SummaryCardSkeleton } from "./_components/summary-card";
+import Last14DaysRevenueCard from "./_components/last-14-days-revenue-card";
+import { Skeleton } from "../_components/ui/skeleton";
 
 const Home = async () => {
-  const { totalLast14DaysRevenue, mostSoldProducts } = await getDashboard();
+  const { mostSoldProducts } = await getDashboard();
 
   return (
     <div className="m-8 flex w-full flex-col space-y-8 rounded-lg p-8">
@@ -48,11 +49,18 @@ const Home = async () => {
         </Suspense>
       </div>
       <div className="grid h-[400px] grid-cols-[minmax(0,2.5fr),minmax(0,1fr)] gap-6">
-        <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white p-6">
-          <p className="text-lg font-semibold text-slate-900">Receita</p>
-          <p className="text-sm text-slate-400">Últimos 14 dias</p>
-          <RevenueChart data={totalLast14DaysRevenue} />
-        </div>
+        <Suspense
+          fallback={
+            <Skeleton className="bg-white p-6">
+              <div className="space-y-2">
+                <div className="h-5 w-[86.26px] rounded-md bg-gray-200" />
+                <div className="h-4 w-48 rounded-md bg-gray-200" />
+              </div>
+            </Skeleton>
+          }
+        >
+          <Last14DaysRevenueCard />
+        </Suspense>
 
         <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white p-6">
           <p className="p-6 text-lg font-semibold text-slate-900">
