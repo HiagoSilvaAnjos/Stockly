@@ -1,8 +1,4 @@
-import {
-  CircleDollarSignIcon,
-  PackageIcon,
-  ShoppingBasketIcon,
-} from "lucide-react";
+import { PackageIcon, ShoppingBasketIcon } from "lucide-react";
 import Header, {
   HeaderLeft,
   HeaderSubtitle,
@@ -18,14 +14,14 @@ import { getDashboard } from "../_data-access/dashboard/get-dashboard";
 import RevenueChart from "./_components/revenue-chart";
 import MostSoldProductItem from "./_components/most-sold-products-item";
 import { Suspense } from "react";
-import TotalRevenueCard from "./_components/total_revenue-card";
+import TotalRevenueCard from "./_components/total-revenue-card";
 import { Skeleton } from "../_components/ui/skeleton";
 import RevenueTodayCard from "./_components/revenue-today-card";
+import TotalSalesCard from "./_components/total-sales-card";
 
 const Home = async () => {
   const {
     totalProducts,
-    totalSales,
     totalStock,
     totalLast14DaysRevenue,
     mostSoldProducts,
@@ -57,13 +53,14 @@ const Home = async () => {
         </Suspense>
       </div>
       <div className="grid grid-cols-3 gap-6">
-        <SummaryCard>
-          <SummaryCardIcon>
-            <CircleDollarSignIcon />
-          </SummaryCardIcon>
-          <SummaryCardTitle>Vendas Totais</SummaryCardTitle>
-          <SummaryCardValue>{totalSales}</SummaryCardValue>
-        </SummaryCard>
+        <Suspense
+          fallback={
+            <Skeleton className="h-full w-full rounded-xl bg-white bg-opacity-50" />
+          }
+        >
+          <TotalSalesCard />
+        </Suspense>
+
         <SummaryCard>
           <SummaryCardIcon>
             <PackageIcon />
